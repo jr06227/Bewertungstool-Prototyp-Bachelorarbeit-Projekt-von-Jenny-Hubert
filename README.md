@@ -1,6 +1,6 @@
 # KI-gestütztes Bewertungstool für Bionik-Innovationsprozesse
 
-Dieses Projekt ist Teil der Abschlussarbeit von Jenny Hubert und untersucht den Einsatz von Künstlicher Intelligenz (KI) zur Unterstützung bionischer Innovationsprozesse.  
+Dieses Projekt ist Teil der Abschlussarbeit von Jenny Hubert und untersucht den Einsatz von Künstlicher Intelligenz zur Unterstützung bionischer Innovationsprozesse.  
 Es wurde ein webbasiertes Prototyp-Tool entwickelt, das verschiedene KI-Systeme analysiert, bewertet und Empfehlungen generiert.
 
 ## Ziel des Projekts
