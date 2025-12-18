@@ -83,16 +83,18 @@ def evaluate_text_by_heuristics(text):
     bio_terms = [
     # Oberflächen & Hydrophobie
     "lotus", "hydrophob", "mikrostruktur", "kontaktwinkel", "oberfläche", "rauheit", "blatt", "wachsschicht",
+    # Haftung & Adhäsion
+    "gecko", "haftung", "adhäsion", "setae", "mikrohaare", "klettern", "haftmechanismus", "nanohaare", "trockenhaftung", "van-der-waals",
     # Struktur- und Leichtbau
     "bambus", "spinnennetz", "vogelknochen", "koralle", "skelett", "struktur", "leichtbau", "tragwerk",
     # Bewegung & Kinematik
-    "flügel", "flosse", "beugung", "muskel", "sehne", "bewegung", "robotik", "mechanik",
+    "flügel", "flosse", "beugung", "muskel", "sehne", "bewegung", "robotik", "mechanik", "klettern", "vertikal", "überkopf", 
     # Energie & Anpassung
     "photosynthese", "lichtlenkung", "energieeffizienz", "selbstorganisation", "adaptiv", "anpassung",
     # Sensorik & Wahrnehmung
     "sensor", "vibrisse", "auge", "echo", "resonanz", "wahrnehmung",
-    # Material & Selbstheilung
-    "keratin", "schuppen", "haut", "selbstheilend", "wachs", "nanostruktur"
+    # Material & Oberflächen
+    "keratin", "schuppen", "haut", "selbstheilend", "wachs", "nanostruktur", "elastomer", "polymer", "funktionsoberfläche", "mikrostrukturierung"
 ]
 
     trans_terms = [
