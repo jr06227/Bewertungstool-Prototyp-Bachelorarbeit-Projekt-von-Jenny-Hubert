@@ -8,6 +8,7 @@ Es wurde ein webbasiertes Prototyp-Tool entwickelt, das verschiedene KI-Systeme 
 Das Tool ermöglicht eine systematische Bewertung von KI-Tools (ChatGPT, AskNature Chat und BIDARA) anhand eines einheitlichen Szenarios.  
 Es bietet Forschenden und Studierenden eine transparente Entscheidungsgrundlage für den Einsatz KI-basierter Werkzeuge in der Bionik.
 Die Bewertung erfolgt heuristisch, transparent und reproduzierbar.
+Bei Bedarf kann der Prototyp für zukünftige Entwicklungen erweitert werden.
 
 ## Technische Grundlage
 
