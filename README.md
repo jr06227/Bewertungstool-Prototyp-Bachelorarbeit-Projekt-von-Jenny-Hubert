@@ -25,3 +25,4 @@ Die Bewertung erfolgt heuristisch, transparent und reproduzierbar.
 ### Installation
 ```bash
 pip install -r requirements.txt
+python app.py
