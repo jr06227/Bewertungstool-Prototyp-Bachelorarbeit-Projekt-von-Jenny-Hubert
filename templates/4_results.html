@@ -1,0 +1,153 @@
+<!DOCTYPE html>
+<html lang="de">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>4. Ergebnisse und Empfehlung</title>
+  <script src="https://cdn.tailwindcss.com"></script>
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;600;700;800&display=swap" rel="stylesheet">
+  <script src="https://unpkg.com/lucide@latest"></script>
+  <style>
+    body {
+      font-family: 'Inter', sans-serif;
+      background-color: #0b1118;
+      color: #f3f4f6;
+    }
+    .container-card {
+      background-color: #172330;
+      box-shadow: 0 10px 15px -3px rgba(0, 0, 0, 0.3);
+      border: 1px solid #2d3748;
+    }
+    .result-row {
+      padding: 1rem;
+      border-radius: 0.5rem;
+      transition: all 0.3s ease;
+      border: 2px solid transparent;
+    }
+    /* Platzfarben – kräftiger & harmonisch abgestimmt */
+    .rank-1 {
+      background-color: #34d39933; /* kräftiges Pastellgrün (Tailwind emerald-400 mit Transparenz) */
+      border-color: #34d399;
+      box-shadow: 0 0 18px rgba(52, 211, 153, 0.5);
+    }
+    .rank-2 {
+      background-color: #facc1533; /* kräftiges Gelb (Tailwind amber-400 mit Transparenz) */
+      border-color: #facc15;
+      box-shadow: 0 0 18px rgba(250, 204, 21, 0.4);
+    }
+    .rank-3 {
+      background-color: #f8717133; /* kräftiges Rot (Tailwind rose-400 mit Transparenz) */
+      border-color: #f87171;
+      box-shadow: 0 0 18px rgba(248, 113, 113, 0.4);
+    }
+    .winner-highlight {
+      transform: scale(1.02);
+    }
+  </style>
+</head>
+<body class="p-4 sm:p-8">
+  <div class="max-w-7xl mx-auto">
+    <header class="mb-8 text-center">
+      <h1 class="text-4xl font-extrabold text-gray-100 mb-2">4. Ergebnisse und Empfehlung</h1>
+      <p class="text-lg text-gray-400">Automatische Gesamtergebnisse der Tool-Bewertung</p>
+    </header>
+
+    <div class="container-card p-6 rounded-xl space-y-6">
+      <div id="noDataBlock" class="bg-yellow-900/40 text-yellow-300 p-4 rounded-lg border border-yellow-600 text-center">
+        ⚠️ Es liegen noch keine Bewertungsergebnisse aus Schritt 3 vor.<br>
+        Bitte führen Sie zuerst die Analyse in <strong>Schritt 3</strong> durch.
+      </div>
+
+      <div id="resultsBlock" class="hidden">
+        <h2 class="text-3xl font-bold text-indigo-400 mb-6 flex items-center">
+          <i data-lucide="bar-chart-3" class="mr-2 h-7 w-7"></i> Bewertungsergebnisse
+        </h2>
+
+        <div id="results_container" class="space-y-4"></div>
+
+        <h3 class="text-2xl font-bold text-green-400 pt-6 border-t border-gray-700 mt-8 flex items-center">
+          <i data-lucide="award" class="mr-2 h-6 w-6"></i> Finale Empfehlung
+        </h3>
+        <div id="final_recommendation" class="p-4 bg-indigo-900/50 border-l-4 border-indigo-400 text-lg font-semibold rounded-lg"></div>
+      </div>
+    </div>
+
+    <div class="flex justify-start mt-8">
+      <a href="3_evaluation.html" class="px-6 py-3 bg-gray-700 text-gray-200 font-semibold rounded-lg hover:bg-gray-600 transition duration-150 flex items-center shadow-md">
+        <i data-lucide="arrow-left" class="mr-2 h-5 w-5"></i> Zurück zu Schritt 3
+      </a>
+    </div>
+  </div>
+
+  <script>
+    const toolInfo = [
+      { id: 'chatgpt', label: 'ChatGPT' },
+      { id: 'asknature', label: 'AskNature Chat' },
+      { id: 'bidara', label: 'BIDARA' }
+    ];
+
+    function generateExplanation(winner, diff) {
+      if (diff < 5)
+        return `Die Ergebnisse liegen sehr eng beieinander, dennoch zeigt <strong>${winner}</strong> leicht bessere Werte.`;
+      if (diff < 15)
+        return `<strong>${winner}</strong> überzeugt insbesondere bei Relevanz, Konsistenz und Übertragbarkeit.`;
+      return `<strong>${winner}</strong> liefert deutlich überlegene Resultate, vor allem in Bezug auf inhaltliche Präzision, Innovation und Nachvollziehbarkeit.`;
+    }
+
+    function loadResults() {
+      const noDataBlock = document.getElementById('noDataBlock');
+      const resultsBlock = document.getElementById('resultsBlock');
+      const resultsContainer = document.getElementById('results_container');
+      const recommendationDiv = document.getElementById('final_recommendation');
+
+      let scores = [];
+      let allZero = true;
+
+      toolInfo.forEach(tool => {
+        const score = parseFloat(localStorage.getItem(`final_score_${tool.id}`) || 0);
+        if (score > 0) allZero = false;
+        scores.push({ ...tool, score });
+      });
+
+      if (allZero) {
+        noDataBlock.classList.remove("hidden");
+        resultsBlock.classList.add("hidden");
+        return;
+      }
+
+      noDataBlock.classList.add("hidden");
+      resultsBlock.classList.remove("hidden");
+
+      scores.sort((a, b) => b.score - a.score);
+
+      const winner = scores[0];
+      const diff = scores[0].score - scores[1].score;
+
+      const rankColors = ["rank-1", "rank-2", "rank-3"];
+
+      resultsContainer.innerHTML = scores
+        .map((tool, index) => `
+          <div class="result-row flex justify-between items-center ${rankColors[index]} ${index === 0 ? 'winner-highlight' : ''}">
+            <span class="text-xl font-bold">${index === 0 ? '<span class="mr-2 text-2xl relative top-[-2px]">👑</span>' : ''}${tool.label}</span>
+            <span class="text-3xl font-extrabold">${tool.score.toFixed(1)}%</span>
+          </div>
+        `)
+        .join('');
+
+      recommendationDiv.innerHTML = `
+        Basierend auf der automatischen Bewertung erzielt <strong>${winner.label}</strong> mit
+        <strong>${winner.score.toFixed(1)}%</strong> den höchsten Gesamtscore.
+        ${generateExplanation(winner.label, diff)}
+        <br><br>
+        <span class="text-gray-300 text-sm italic">
+          Die Bewertung erfolgte automatisch anhand von 12 inhaltlichen und methodischen Kriterien.
+        </span>
+      `;
+
+      lucide.createIcons();
+    }
+
+    document.addEventListener("DOMContentLoaded", loadResults);
+  </script>
+</body>
+</html>

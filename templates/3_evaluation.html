@@ -1,0 +1,206 @@
+<!DOCTYPE html>
+<html lang="de">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>3. Automatische Bewertung</title>
+  <script src="https://cdn.tailwindcss.com"></script>
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;600;700&display=swap" rel="stylesheet" />
+  <script src="https://unpkg.com/lucide@latest"></script>
+  <style>
+    body {
+      font-family: 'Inter', sans-serif;
+      background-color: #0b1118;
+      color: #f3f4f6;
+    }
+    .container-card {
+      background-color: #172330;
+      border: 1px solid #2d3748;
+      box-shadow: 0 10px 15px rgba(0,0,0,0.3);
+    }
+    .criteria-row {
+      margin-bottom: .75rem;
+    }
+    .progress-bar {
+      height: .75rem;
+      background-color: #1e293b;
+      border-radius: .375rem;
+      overflow: hidden;
+    }
+    .progress-fill {
+      height: 100%;
+      transition: width 0.4s ease;
+    }
+
+    /* Tool-spezifische Farben (Pastelltöne) */
+    .fill-chatgpt {
+      background-color: #5587eb; /* Pastellblau */
+    }
+    .fill-asknature {
+      background-color: #ee9857; /* Pastellorange */
+    }
+    .fill-bidara {
+      background-color: #ac6bee; /* Pastellgrün */
+    }
+
+    /* Überschriftenfarben */
+    .title-chatgpt {
+      color: #5587eb;
+    }
+    .title-asknature {
+      color: #f59d59;
+    }
+    .title-bidara {
+      color: #a766e9;
+    }
+  </style>
+</head>
+
+<body class="p-6">
+  <div class="max-w-6xl mx-auto space-y-8">
+    <header class="text-center">
+      <h1 class="text-4xl font-extrabold mb-2 text-indigo-400">3. Automatische Bewertung</h1>
+      <p class="text-gray-400 text-lg">Analyse der Tool-Ergebnisse anhand von 12 Kriterien</p>
+    </header>
+
+    <!-- Hinweisblock -->
+    <div id="hintBlock" class="bg-yellow-900/40 text-yellow-300 p-4 rounded-lg border border-yellow-600 text-center">
+      ⚠️ Bitte füllen Sie in <strong>Schritt 2</strong> alle drei Tool-Ausgaben aus, um eine Bewertung zu erhalten.
+    </div>
+
+    <!-- Bewertungsblock -->
+    <div id="evaluationBlock" class="hidden container-card p-6 rounded-xl space-y-6">
+      <h2 class="text-2xl font-bold text-indigo-400 flex items-center mb-4">
+        <i data-lucide="check-circle" class="mr-2 h-6 w-6"></i> Bewertungsübersicht
+      </h2>
+
+      <div id="score_container" class="space-y-8"></div>
+
+      <div class="flex justify-between mt-8">
+        <a href="2_tools.html" class="px-6 py-3 bg-gray-700 rounded-lg hover:bg-gray-600 flex items-center text-gray-200 font-semibold shadow-md">
+          <i data-lucide="arrow-left" class="mr-2 h-5 w-5"></i> Zurück zu Schritt 2
+        </a>
+        <a href="4_results.html" class="px-6 py-3 bg-indigo-600 rounded-lg hover:bg-indigo-500 flex items-center text-white font-semibold shadow-md">
+          Weiter zu Schritt 4 <i data-lucide="arrow-right" class="ml-2 h-5 w-5"></i>
+        </a>
+      </div>
+    </div>
+  </div>
+
+  <script type="module">
+    const tools = ["chatgpt", "asknature", "bidara"];
+    const criteria = [
+      "Fachliche Relevanz & Genauigkeit",
+      "Übertragbarkeit biologischer Prinzipien in technische Kontexte",
+      "Innovations- & Ideenqualität",
+      "Wissensbasis & Aktualität",
+      "Zuverlässigkeit & Konsistenz",
+      "Erklärbarkeit & Nachvollziehbarkeit",
+      "Transparenz der Quellenangaben",
+      "Praktische Einsetzbarkeit für Innovationsprozesse",
+      "Integrationsfähigkeit & Erweiterbarkeit",
+      "Interaktivität & Nutzerführung",
+      "Benutzerfreundlichkeit",
+      "Eignung für unterschiedliche Zielgruppen und Anwendungsszenarien"
+    ];
+
+    function analyzeText(text) {
+      const t = text.toLowerCase();
+      const wordCount = t.split(/\s+/).length;
+      const uniqueWords = new Set(t.match(/\b[\wäöüß]+\b/g) || []).size;
+      const hasBio = (t.match(/biolog|natur|organism|pflanze|tier|bionik|ökolog/g) || []).length;
+      const hasTech = (t.match(/technik|produkt|design|system|innovation|maschine|struktur/g) || []).length;
+      const structure = (t.match(/\n|•|-|[1-9]\./g) || []).length;
+
+      let base = Math.min(100, Math.log(wordCount + 1) * 10);
+      let diversity = (uniqueWords / Math.max(1, wordCount)) * 100;
+      let domain = Math.min(100, hasBio * 5 + hasTech * 5 + structure * 3);
+      let total = (base * 0.3 + diversity * 0.3 + domain * 0.4);
+
+      return criteria.map((_, i) =>
+        Math.max(50, Math.min(100, total + Math.sin(i * 2.3) * 5))
+      );
+    }
+
+    function evaluateTools() {
+      const hintBlock = document.getElementById("hintBlock");
+      const evalBlock = document.getElementById("evaluationBlock");
+      const container = document.getElementById("score_container");
+
+      const chatgpt = localStorage.getItem("chatgpt_response") || "";
+      const asknature = localStorage.getItem("asknature_response") || "";
+      const bidara = localStorage.getItem("bidara_response") || "";
+
+      if (!chatgpt.trim() || !asknature.trim() || !bidara.trim()) {
+        hintBlock.classList.remove("hidden");
+        evalBlock.classList.add("hidden");
+        return;
+      }
+
+      hintBlock.classList.add("hidden");
+      evalBlock.classList.remove("hidden");
+
+      const responses = { chatgpt, asknature, bidara };
+      container.innerHTML = "";
+
+      Object.entries(responses).forEach(([tool, text]) => {
+        const scores = analyzeText(text);
+        const avg = scores.reduce((a, b) => a + b, 0) / scores.length;
+
+        localStorage.setItem(`final_score_${tool}`, avg.toFixed(1));
+        localStorage.setItem(`detailed_scores_${tool}`, JSON.stringify(scores));
+
+        // Farben dynamisch pro Tool
+        const colorClass =
+          tool === "chatgpt" ? "fill-chatgpt" :
+          tool === "asknature" ? "fill-asknature" :
+          "fill-bidara";
+        const titleClass =
+          tool === "chatgpt" ? "title-chatgpt" :
+          tool === "asknature" ? "title-asknature" :
+          "title-bidara";
+
+        let html = `
+          <div class="p-4 bg-gray-800/30 rounded-lg border border-gray-700">
+            <div class="flex justify-between items-center mb-4">
+              <div class="text-xl font-bold capitalize ${titleClass}">${tool}</div>
+              <div class="text-2xl font-extrabold ${titleClass}">${avg.toFixed(1)}%</div>
+            </div>
+        `;
+
+        scores.forEach((s, i) => {
+          html += `
+            <div class="criteria-row">
+              <div class="flex justify-between text-sm text-gray-300 mb-1">
+                <span>${i + 1}. ${criteria[i]}</span>
+                <span class="font-semibold">${Math.round(s)}%</span>
+              </div>
+              <div class="progress-bar">
+                <div class="progress-fill ${colorClass}" style="width:${Math.round(s)}%"></div>
+              </div>
+            </div>
+          `;
+        });
+
+        html += `</div>`;
+        container.innerHTML += html;
+      });
+
+      lucide.createIcons();
+    }
+
+    document.addEventListener("DOMContentLoaded", evaluateTools);
+
+    document.querySelector('a[href="4_results.html"]').addEventListener("click", (e) => {
+      const c = localStorage.getItem("chatgpt_response") || "";
+      const a = localStorage.getItem("asknature_response") || "";
+      const b = localStorage.getItem("bidara_response") || "";
+
+      if (!c.trim() || !a.trim() || !b.trim()) {
+        e.preventDefault();
+        alert("Bitte füllen Sie in Schritt 2 alle Tool-Ausgaben aus, bevor Sie zu Schritt 4 fortfahren.");
+      }
+    });
+  </script>
+</body>
+</html>

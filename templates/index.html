@@ -1,0 +1,160 @@
+<!DOCTYPE html>
+<html lang="de">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Bionik & KI – Prototyp</title>
+
+    <!-- Lucide Icons für bessere Symbole (Wird benötigt, um die Icons anzuzeigen) -->
+    <script src="https://unpkg.com/lucide@latest"></script>
+
+    <!-- CSS einbinden -->
+    <style>
+        /* Basis-Styling für Zentrierung und Hintergrund */
+        body {
+            background-color: #0d1b2a;
+            color: #ffffff;
+            font-family: 'Segoe UI', sans-serif;
+            margin: 0;
+            padding: 40px 0;
+            display: flex;
+            flex-direction: column;
+            align-items: center; 
+            min-height: 100vh;
+            justify-content: center; 
+        }
+
+        /* Header und allgemeine Typografie */
+        header {
+            text-align: center;
+            margin-bottom: 40px; 
+        }
+
+        h1 {
+            font-size: 2.5rem; 
+            color: #e0e1dd;
+        }
+
+        /* MAIN-Bereich für die Vergrößerung des Inhalts */
+        main {
+            width: 90%;
+            max-width: 800px; 
+            text-align: center;
+        }
+
+        /* Intro Text vergrößern */
+        .intro {
+            margin-bottom: 40px;
+        }
+
+        .intro h2 {
+            font-size: 1.8rem; 
+            color: #e0e1dd;
+            margin-bottom: 10px;
+        }
+
+        .intro p {
+            font-size: 1.1rem; 
+            color: #a9bcd0;
+        }
+
+        /* Button Container */
+        .button-container {
+            display: flex;
+            flex-direction: column;
+            gap: 20px; 
+        }
+
+        /* Button Styling */
+        .main-btn {
+            background-color: #1b263b; /* Dunklerer Hintergrund für Kontrast */
+            color: #a9bcd0;
+            font-size: 1.3rem; 
+            font-weight: bold;
+            padding: 18px 30px; 
+            width: 100%;
+            border: 2px solid #415a77; /* Subtiler Rand */
+            border-radius: 12px;
+            cursor: pointer;
+            transition: 0.3s ease-in-out;
+            display: flex; /* Für Icon und Text nebeneinander */
+            align-items: center;
+            justify-content: center;
+        }
+
+        .main-btn:hover {
+            background-color: #415a77;
+            border-color: #778da9;
+            color: #fff;
+            box-shadow: 0 4px 20px rgba(0, 0, 0, 0.5);
+        }
+
+        /* Styling für Lucide Icons innerhalb des Buttons */
+        .main-btn svg {
+            margin-right: 15px;
+            width: 28px;
+            height: 28px;
+            stroke-width: 2.5;
+        }
+
+        /* Footer Styling */
+        footer {
+            margin-top: 50px;
+            text-align: center;
+        }
+
+        footer p {
+            font-size: 0.9rem;
+            color: #415a77;
+        }
+    </style>
+</head>
+<body>
+    <header>
+        <h1>Bionik & KI – Bewertungsprototyp</h1>
+        <p>Analyse, Vergleich und Bewertung von KI-Tools für bionische Innovationsprozesse</p>
+    </header>
+
+    <main>
+        <section class="intro">
+            <h2>Start des Prototyps</h2>
+            <p>Wählen Sie eine der folgenden Optionen, um den Bewertungsprozess zu starten:</p>
+        </section>
+
+        <div class="button-container">
+            <!-- 1. Szenario & Prompt -->
+            <form action="/scenario" method="get">
+                <button class="main-btn">
+                    <i data-lucide="file-edit"></i>
+                    Szenario & Prompt
+                </button>
+            </form>
+
+            <!-- 2. Tools & Ergebnisse -->
+            <form action="/tools" method="get">
+                <button class="main-btn">
+                    <i data-lucide="bar-chart-2"></i>
+                    Tools & Ergebnisse
+                </button>
+            </form>
+
+            <!-- 3. Bewertung nach Kriterien -->
+            <form action="/evaluation" method="get">
+                <button class="main-btn">
+                    <i data-lucide="check-square"></i>
+                    Bewertung nach Kriterien
+                </button>
+            </form>
+        </div>
+    </main>
+
+    <footer>
+        <p>© 2025 – Bachelorarbeit Projekt von Jenny Hubert </p>
+    </footer>
+    
+    <!-- Initialisiert Lucide Icons nach dem Laden des DOM -->
+    <script>
+        lucide.createIcons();
+    </script>
+</body>
+</html>

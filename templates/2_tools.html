@@ -1,0 +1,133 @@
+<!DOCTYPE html>
+<html lang="de">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>2. Tools anwenden</title>
+  <script src="https://cdn.tailwindcss.com"></script>
+  <link rel="stylesheet" href="style.css">
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;600;700&display=swap" rel="stylesheet">
+  <script src="https://unpkg.com/lucide@latest"></script>
+  <style>
+    body {
+      font-family: 'Inter', sans-serif;
+      background-color: #0b1118;
+      color: #f3f4f6;
+    }
+    .container-card {
+      background-color: #172330;
+      box-shadow: 0 10px 15px -3px rgba(0, 0, 0, 0.3);
+      border: 1px solid #2d3748;
+    }
+    textarea {
+      background-color: #1e293b;
+      border: 1px solid #374151;
+      color: #f3f4f6;
+      border-radius: 0.5rem;
+      padding: 1rem;
+      width: 100%;
+      resize: vertical;
+    }
+  </style>
+</head>
+<body class="p-6 sm:p-10">
+  <div class="max-w-6xl mx-auto">
+    <header class="mb-8 text-center">
+      <h1 class="text-4xl font-extrabold text-gray-100 mb-2">2. Tools anwenden</h1>
+      <p class="text-gray-400">Nutzen Sie die angegebenen Tools und fügen Sie die Antworten hier ein.</p>
+    </header>
+
+    <div class="container-card p-6 rounded-xl space-y-8">
+      <!-- Tool: ChatGPT -->
+      <div>
+        <div class="flex justify-between items-center mb-2">
+          <h2 class="text-xl font-bold text-blue-300 flex items-center">
+            <i data-lucide="message-circle" class="mr-2 w-5 h-5"></i> ChatGPT
+          </h2>
+          <a href="https://chatgpt.com/" target="_blank" class="px-4 py-2 bg-blue-400 text-white rounded-lg font-semibold hover:bg-blue-300 transition">Öffnen</a>
+        </div>
+        <div class="relative">
+          <textarea id="chatgpt_response" rows="5" placeholder="Antwort von ChatGPT hier einfügen..."></textarea>
+          <div class="absolute left-0 -bottom-12 mt-2">
+            <button type="button" onclick="clearField('chatgpt_response')"
+              class="inline-flex items-center px-3 py-1.5 bg-gray-700 text-gray-200 rounded-lg text-sm font-semibold hover:bg-gray-600 transition">
+              <i data-lucide="trash-2" class="mr-1 w-4 h-4"></i> Löschen
+            </button>
+          </div>
+        </div>
+      </div>
+
+      <!-- Tool: AskNature Chat -->
+      <div class="pt-8">
+        <div class="flex justify-between items-center mb-2">
+          <h2 class="text-xl font-bold text-orange-400 flex items-center">
+            <i data-lucide="leaf" class="mr-2 w-5 h-5"></i> AskNature Chat
+          </h2>
+          <a href="https://chatgpt.com/g/g-2GIi3W6Er-asknature-chat" target="_blank" class="px-4 py-2 bg-orange-500 text-white rounded-lg font-semibold hover:bg-orange-300 transition">Öffnen</a>
+        </div>
+        <div class="relative">
+          <textarea id="asknature_response" rows="5" placeholder="Antwort von AskNature Chat hier einfügen..."></textarea>
+          <div class="absolute left-0 -bottom-12 mt-2">
+            <button type="button" onclick="clearField('asknature_response')"
+              class="inline-flex items-center px-3 py-1.5 bg-gray-700 text-gray-200 rounded-lg text-sm font-semibold hover:bg-gray-600 transition">
+              <i data-lucide="trash-2" class="mr-1 w-4 h-4"></i> Löschen
+            </button>
+          </div>
+        </div>
+      </div>
+
+      <!-- Tool: BIDARA -->
+      <div class="pt-8">
+        <div class="flex justify-between items-center mb-2">
+          <h2 class="text-xl font-bold text-purple-400 flex items-center">
+            <i data-lucide="bug" class="mr-2 w-5 h-5"></i> BIDARA
+          </h2>
+          <a href="https://chatgpt.com/g/g-fYEzXTrk7-bidara-biomimicry-design-assistant" target="_blank" class="px-4 py-2 bg-purple-500 text-white rounded-lg font-semibold hover:bg-green-400 transition">Öffnen</a>
+        </div>
+        <div class="relative">
+          <textarea id="bidara_response" rows="5" placeholder="Antwort von BIDARA hier einfügen..."></textarea>
+          <div class="absolute left-0 -bottom-12 mt-2">
+            <button type="button" onclick="clearField('bidara_response')"
+              class="inline-flex items-center px-3 py-1.5 bg-gray-700 text-gray-200 rounded-lg text-sm font-semibold hover:bg-gray-600 transition">
+              <i data-lucide="trash-2" class="mr-1 w-4 h-4"></i> Löschen
+            </button>
+          </div>
+        </div>
+      </div>
+
+      <!-- Navigation -->
+      <div class="flex justify-between pt-20 border-t border-gray-700">
+        <a href="1_scenario.html" class="px-6 py-3 bg-gray-700 text-gray-200 font-semibold rounded-lg hover:bg-gray-600 transition flex items-center">
+          <i data-lucide="arrow-left" class="mr-2 w-5 h-5"></i> Zurück zu Schritt 1
+        </a>
+        <a href="3_evaluation.html" class="px-6 py-3 bg-indigo-600 text-white font-semibold rounded-lg hover:bg-indigo-500 transition flex items-center">
+          Weiter zu Schritt 3
+          <i data-lucide="arrow-right" class="ml-2 w-5 h-5"></i>
+        </a>
+      </div>
+    </div>
+  </div>
+
+  <script>
+    const save = (id) => localStorage.setItem(id, document.getElementById(id).value);
+    const load = (id) => document.getElementById(id).value = localStorage.getItem(id) || '';
+
+    ['chatgpt_response', 'asknature_response', 'bidara_response'].forEach(id => {
+      load(id);
+      document.getElementById(id).addEventListener('input', () => save(id));
+    });
+
+    function clearField(id) {
+      const el = document.getElementById(id);
+      if (!el) return;
+      el.value = '';
+      localStorage.removeItem(id);
+      const evt = new Event('input', { bubbles: true });
+      el.dispatchEvent(evt);
+      el.focus();
+    }
+
+    lucide.createIcons();
+  </script>
+</body>
+</html>
