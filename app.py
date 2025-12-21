@@ -20,14 +20,15 @@ CRITERIA = [
 ]
 
 EVALUATION_DATA = {
-    'scenario': "Standard: Verschmutzung auf Oberflächen wie Fenstern und Fassaden.",
-    'prompt': "Standard: Wie können Prinzipien aus der Bionik genutzt werden, um Verschmutzungen zu verhindern?",
+    'scenario': "",
+    'prompt': "",
     'tool_responses': {
-        'chatgpt': "ChatGPT lieferte eine detaillierte, textbasierte Erklärung des Lotus-Effekts und schlug mehrere mögliche Anwendungsgebiete vor.",
-        'asknature': "AskNature Chat bot eine strukturierte Antwort, die sich direkt auf die AskNature Datenbank bezog.",
-        'bidara': "BIDARA präsentierte eine formalisierte Lösung in Form eines strukturierten Bio-Design-Schemas."
+        'chatgpt': "",
+        'asknature': "",
+        'bidara': ""
     },
-    'scores': None
+    'scores': None,
+    'weights': None
 }
 
 # --- Hilfsfunktionen  ---
@@ -52,11 +53,57 @@ def length_score(text):
 
 def citation_score(text):
     t = (text or "").lower()
-    if "http" in t or "doi" in t or "api" in t:
+
+    # 5 = überprüfbare Quellen
+    if re.search(r'(http[s]?://|doi\s*[:]|arxiv\s*[:]|isbn\s*[:])', t):
         return 5
-    if re.search(r'\b(study|paper|research|journal|according to|quelle|datenbank)\b', t):
+
+    # 4 = benannte Studien, Autoren oder Institutionen
+    if re.search(
+        r'\b(study|studies|paper|journal|according to|et al\.?|author|forschung von|beschrieben von)\b',
+        t
+    ):
         return 4
+
+    # 3 = Fachbegriffe OHNE Quellen
+    if re.search(
+        r'\b(van[- ]der[- ]waals|lotus[- ]effekt|adhäsion|kapillarkraft|mikrostruktur)\b',
+        t
+    ):
+        return 3
+
+    # 2 = nur wissenschaftlicher Stil
+    if re.search(
+        r'\b(mechanismus|prinzip|stand der technik|bekannt|bewährt)\b',
+        t
+    ):
+        return 2
+
+    # 1 = keine Anzeichen von Quellen
     return 1
+
+def source_transparency_score(text):
+    t = (text or "").lower()
+
+    # echte, überprüfbare Quellen
+    explicit_sources = [
+        "doi", "http", "https", "et al.", "isbn",
+        "ieee", "springer", "elsevier", "nature",
+        "science", "journal", "proceedings"
+    ]
+
+    # vage Verweise (zählen NICHT als echte Quelle)
+    vague_sources = [
+        "stand der technik", "bekannt", "wird beschrieben",
+        "studien zeigen", "forschung zeigt", "bar-cohen"
+    ]
+
+    if any(src in t for src in explicit_sources):
+        return 5
+    if any(src in t for src in vague_sources):
+        return 2
+    return 1
+
 
 def lexical_diversity_score(text):
     tokens = re.findall(r'\w+', (text or "").lower())
@@ -144,7 +191,7 @@ def evaluate_text_by_heuristics(text):
     scores["wissensbasis"] = citation_score(t)
     scores["zuverlaessigkeit"] = modal_weakness_score(t)
     scores["erklaerbarkeit"] = length_score(t)
-    scores["quellen_transparenz"] = citation_score(t)
+    scores["quellen_transparenz"] = source_transparency_score(t)
     scores["praktische_einsetzbarkeit"] = scale_count_to_1_5(count_terms(t, practical_terms))
     scores["integrationsfaehigkeit"] = scale_count_to_1_5(count_terms(t, integ_terms))
     scores["interaktivitaet"] = scale_count_to_1_5(count_terms(t, interakt_terms))
@@ -157,7 +204,7 @@ def evaluate_text_by_heuristics(text):
         scores[k] = int(min(5, max(1, v)))
     return scores
 
-# --- Gleichstände vermeiden (mit deterministischem Bonus) ---
+# --- Gleichstände vermeiden ---
 def compute_weighted_score(feature_scores, weights, extra_factor=0.0):
     total_w = sum(weights.values()) if sum(weights.values()) > 0 else len(CRITERIA) * 1.0
     weighted_sum = 0.0
@@ -169,7 +216,7 @@ def compute_weighted_score(feature_scores, weights, extra_factor=0.0):
     if max_possible_sum == 0:
         return 0
     percentage_score = (weighted_sum / max_possible_sum) * 100
-    # Füge kleinen Bonus hinzu (z. B. aus lexikalischer Diversität)
+    # Füge kleinen Bonus hinzu
     percentage_score += extra_factor
     return round(percentage_score, 1)
 
@@ -285,7 +332,7 @@ def evaluation():
             'features': ratings[tool_id]
         }
 
-    # Sicherheit: Sortiere Scores, um Gleichstände auch bei Rundung zu verhindern
+    # Sortiert Scores, um Gleichstände auch bei Rundung zu verhindern
     unique_adjustment = 0.0001
     sorted_ids = sorted(final_scores.keys())
     for i, tid in enumerate(sorted_ids):

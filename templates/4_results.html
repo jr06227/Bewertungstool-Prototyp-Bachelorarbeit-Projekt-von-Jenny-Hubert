@@ -87,12 +87,18 @@
     ];
 
     function generateExplanation(winner, diff) {
-      if (diff < 5)
-        return `Die Ergebnisse liegen sehr eng beieinander, dennoch zeigt <strong>${winner}</strong> leicht bessere Werte.`;
-      if (diff < 15)
-        return `<strong>${winner}</strong> überzeugt insbesondere bei Relevanz, Konsistenz und Übertragbarkeit.`;
-      return `<strong>${winner}</strong> liefert deutlich überlegene Resultate, vor allem in Bezug auf inhaltliche Präzision, Innovation und Nachvollziehbarkeit.`;
-    }
+  // Diese Begriffe spiegeln deine CRITERIA-Liste aus der app.py wider
+  if (diff < 5) {
+    return `Das Ergebnis ist sehr ausgeglichen. <strong>${winner}</strong> setzt sich mit einem minimalen Vorsprung durch, da es in der Summe der 12 Kriterien (insbesondere bei der <strong>Erklärbarkeit</strong> und <strong>Benutzerfreundlichkeit</strong>) die konsistentesten Antworten liefert.`;
+  }
+  
+  if (diff < 15) {
+    return `<strong>${winner}</strong> überzeugt in diesem Szenario vor allem durch eine hohe <strong>fachliche Relevanz</strong> und eine bessere <strong>Wissensbasis</strong>. Die generierten Ansätze weisen eine stärkere bionische Fundierung auf.`;
+  }
+  
+  // Bei deutlichem Vorsprung
+  return `<strong>${winner}</strong> liefert deutlich überlegene Resultate. Besonders hervorzuheben sind die <strong>Innovationsqualität</strong> sowie die <strong>Quellentransparenz</strong>.`;
+}
 
     function loadResults() {
       const noDataBlock = document.getElementById('noDataBlock');

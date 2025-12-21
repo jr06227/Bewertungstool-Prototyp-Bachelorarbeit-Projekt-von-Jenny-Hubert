@@ -32,15 +32,15 @@
       transition: width 0.4s ease;
     }
 
-    /* Tool-spezifische Farben (Pastelltöne) */
+    /* Tool-spezifische Farben */
     .fill-chatgpt {
-      background-color: #5587eb; /* Pastellblau */
+      background-color: #5587eb;
     }
     .fill-asknature {
-      background-color: #ee9857; /* Pastellorange */
+      background-color: #ee9857; 
     }
     .fill-bidara {
-      background-color: #ac6bee; /* Pastellgrün */
+      background-color: #ac6bee; 
     }
 
     /* Überschriftenfarben */
@@ -63,12 +63,12 @@
       <p class="text-gray-400 text-lg">Analyse der Tool-Ergebnisse anhand von 12 Kriterien</p>
     </header>
 
-    <!-- Hinweisblock -->
+    /*-- Hinweisblock --*/
     <div id="hintBlock" class="bg-yellow-900/40 text-yellow-300 p-4 rounded-lg border border-yellow-600 text-center">
       ⚠️ Bitte füllen Sie in <strong>Schritt 2</strong> alle drei Tool-Ausgaben aus, um eine Bewertung zu erhalten.
     </div>
 
-    <!-- Bewertungsblock -->
+    /*-- Bewertungsblock --*/
     <div id="evaluationBlock" class="hidden container-card p-6 rounded-xl space-y-6">
       <h2 class="text-2xl font-bold text-indigo-400 flex items-center mb-4">
         <i data-lucide="check-circle" class="mr-2 h-6 w-6"></i> Bewertungsübersicht
@@ -105,22 +105,40 @@
     ];
 
     function analyzeText(text) {
-      const t = text.toLowerCase();
-      const wordCount = t.split(/\s+/).length;
-      const uniqueWords = new Set(t.match(/\b[\wäöüß]+\b/g) || []).size;
-      const hasBio = (t.match(/biolog|natur|organism|pflanze|tier|bionik|ökolog/g) || []).length;
-      const hasTech = (t.match(/technik|produkt|design|system|innovation|maschine|struktur/g) || []).length;
-      const structure = (t.match(/\n|•|-|[1-9]\./g) || []).length;
+  const t = text.toLowerCase();
+  const words = t.split(/\s+/).length;
+  const uniqueWords = new Set(t.match(/\b[\wäöüß]+\b/g) || []).size;
 
-      let base = Math.min(100, Math.log(wordCount + 1) * 10);
-      let diversity = (uniqueWords / Math.max(1, wordCount)) * 100;
-      let domain = Math.min(100, hasBio * 5 + hasTech * 5 + structure * 3);
-      let total = (base * 0.3 + diversity * 0.3 + domain * 0.4);
+  /* --- QUELLENANALYSE  ---*/
+  const explicitSources = /(http|https|doi|isbn|et al\.|journal|nature|science|ieee|springer)/g;
+  const vagueSources = /(studien zeigen|forschung zeigt|stand der technik|bekannt)/g;
 
-      return criteria.map((_, i) =>
-        Math.max(50, Math.min(100, total + Math.sin(i * 2.3) * 5))
-      );
-    }
+  const hasExplicitSources = explicitSources.test(t);
+  const hasVagueSources = vagueSources.test(t);
+
+  /* --- BASISWERTE ---*/
+  let lengthScore = Math.min(100, Math.log(words + 1) * 15);
+  let diversityScore = (uniqueWords / Math.max(1, words)) * 100;
+
+  /* --- QUELLEN-SCORE ---*/
+  let sourceScore = 0;
+  if (hasExplicitSources) sourceScore = 100;
+  else if (hasVagueSources) sourceScore = 50;
+  else sourceScore = 15; 
+
+  /* --- GESAMT ---*/
+  const total =
+    lengthScore * 0.25 +
+    diversityScore * 0.25 +
+    sourceScore * 0.5; 
+
+  /* --- AUF 12 KRITERIEN VERTEILEN ---*/
+  return Array.from({ length: 12 }, (_, i) => {
+    let jitter = Math.sin(i * 1.7) * 3;
+    return Math.max(30, Math.min(100, total + jitter));
+  });
+}
+
 
     function evaluateTools() {
       const hintBlock = document.getElementById("hintBlock");
@@ -150,7 +168,6 @@
         localStorage.setItem(`final_score_${tool}`, avg.toFixed(1));
         localStorage.setItem(`detailed_scores_${tool}`, JSON.stringify(scores));
 
-        // Farben dynamisch pro Tool
         const colorClass =
           tool === "chatgpt" ? "fill-chatgpt" :
           tool === "asknature" ? "fill-asknature" :
