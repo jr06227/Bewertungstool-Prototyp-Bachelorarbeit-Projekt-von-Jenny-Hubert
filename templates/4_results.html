@@ -24,19 +24,19 @@
       transition: all 0.3s ease;
       border: 2px solid transparent;
     }
-    /* Platzfarben – kräftiger & harmonisch abgestimmt */
+    /* Platzfarben */
     .rank-1 {
-      background-color: #34d39933; /* kräftiges Pastellgrün (Tailwind emerald-400 mit Transparenz) */
+      background-color: #34d39933; 
       border-color: #34d399;
       box-shadow: 0 0 18px rgba(52, 211, 153, 0.5);
     }
     .rank-2 {
-      background-color: #facc1533; /* kräftiges Gelb (Tailwind amber-400 mit Transparenz) */
+      background-color: #facc1533; 
       border-color: #facc15;
       box-shadow: 0 0 18px rgba(250, 204, 21, 0.4);
     }
     .rank-3 {
-      background-color: #f8717133; /* kräftiges Rot (Tailwind rose-400 mit Transparenz) */
+      background-color: #f8717133; 
       border-color: #f87171;
       box-shadow: 0 0 18px rgba(248, 113, 113, 0.4);
     }
@@ -87,17 +87,17 @@
     ];
 
     function generateExplanation(winner, diff) {
-  // Diese Begriffe spiegeln deine CRITERIA-Liste aus der app.py wider
+  /* Diese Begriffe spiegeln deine CRITERIA-Liste aus der app.py wider */
   if (diff < 5) {
-    return `Das Ergebnis ist sehr ausgeglichen. <strong>${winner}</strong> setzt sich mit einem minimalen Vorsprung durch, da es in der Summe der 12 Kriterien (insbesondere bei der <strong>Erklärbarkeit</strong> und <strong>Benutzerfreundlichkeit</strong>) die konsistentesten Antworten liefert.`;
+    return `Das Ergebnis ist sehr ausgeglichen. <strong>${winner}</strong> setzt sich mit einem minimalen Vorsprung durch.`;
   }
   
   if (diff < 15) {
-    return `<strong>${winner}</strong> überzeugt in diesem Szenario vor allem durch eine hohe <strong>fachliche Relevanz</strong> und eine bessere <strong>Wissensbasis</strong>. Die generierten Ansätze weisen eine stärkere bionische Fundierung auf.`;
+    return `<strong>${winner}</strong> überzeugt in diesem Szenario vor allem durch eine hohe <strong>fachliche Relevanz</strong> und eine bessere <strong>Wissensbasis</strong>.`;
   }
   
-  // Bei deutlichem Vorsprung
-  return `<strong>${winner}</strong> liefert deutlich überlegene Resultate. Besonders hervorzuheben sind die <strong>Innovationsqualität</strong> sowie die <strong>Quellentransparenz</strong>.`;
+  /* Bei deutlichem Vorsprung */
+  return `<strong>${winner}</strong> liefert deutlich überlegene Resultate.`;
 }
 
     function loadResults() {
