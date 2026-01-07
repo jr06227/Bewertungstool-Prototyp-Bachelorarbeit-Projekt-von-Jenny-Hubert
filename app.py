@@ -131,7 +131,7 @@ def evaluate_text_by_heuristics(text):
     # Oberflächen & Hydrophobie
     "lotus", "hydrophob", "mikrostruktur", "kontaktwinkel", "oberfläche", "rauheit", "blatt", "wachsschicht",
     # Haftung & Adhäsion
-    "gecko", "haftung", "adhäsion", "setae", "mikrohaare", "klettern", "haftmechanismus", "nanohaare", "trockenhaftung", "van-der-waals",
+    "gecko", "haftung", "adhäsion", "setae", "spatulae", "mikrohaare", "klettern", "haftmechanismus", "nanohaare", "trockenhaftung", "van-der-waals",
     # Struktur- und Leichtbau
     "bambus", "spinnennetz", "vogelknochen", "koralle", "skelett", "struktur", "leichtbau", "tragwerk",
     # Bewegung & Kinematik
