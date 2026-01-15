@@ -1,21 +1,21 @@
-# KI-gestütztes Bewertungstool für Bionik-Innovationsprozesse
+# Tool zur Bewertung generativer KI im Innovationsprozess
 
-Dieses Projekt ist Teil der Abschlussarbeit von Jenny Hubert und untersucht den Einsatz von Künstlicher Intelligenz zur Unterstützung bionischer Innovationsprozesse.  
-Es wurde ein webbasiertes Prototyp-Tool entwickelt, das verschiedene KI-Systeme analysiert, bewertet und Empfehlungen generiert.
+Dieses Repository beinhaltet den Quellcode des webbasierten Bewertungstools, das im Rahmen der Bachelorarbeit von Jenny Hubert entwickelt wurde. 
+Das Tool dient der systematischen Analyse und Evaluation von KI-Sprachmodellen im Kontext bionischer Fragestellungen.
 
 ## Ziel des Projekts
 
 Das Tool ermöglicht eine systematische Bewertung von KI-Tools (ChatGPT, AskNature Chat und BIDARA) anhand eines einheitlichen Szenarios.  
-Es bietet Forschenden und Studierenden eine transparente Entscheidungsgrundlage für den Einsatz KI-basierter Werkzeuge in der Bionik.
-Die Bewertung erfolgt heuristisch, transparent und reproduzierbar.
-Bei Bedarf kann der Prototyp für zukünftige Entwicklungen erweitert werden.
+Es bietet Forschenden und Studierenden eine transparente Entscheidungsgrundlage für den Einsatz KI-basierter Tools in der Bionik.
+Kern des Tools ist ein heuristisches Modell, das qualitative Kriterien in messbare Punkte übersetzt. 
+Der Code ist modular strukturiert, damit der Prototyp für zukünftige Projekte einfach angepasst werden kann.
 
 ## Technische Grundlage
 
 - Programmiersprache: Python
 - Webframework: Flask
 - Frontend: HTML / CSS
-- Bewertungslogik: regelbasierte heuristische Analyse
+- Bewertungslogik: Regelbasierte heuristische Analyse
 
 ## Installation und Start
 
