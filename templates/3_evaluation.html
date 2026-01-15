@@ -31,28 +31,12 @@
       height: 100%;
       transition: width 0.4s ease;
     }
-
-    /* Tool-spezifische Farben */
-    .fill-chatgpt {
-      background-color: #5587eb;
-    }
-    .fill-asknature {
-      background-color: #ee9857; 
-    }
-    .fill-bidara {
-      background-color: #ac6bee; 
-    }
-
-    /* Überschriftenfarben */
-    .title-chatgpt {
-      color: #5587eb;
-    }
-    .title-asknature {
-      color: #f59d59;
-    }
-    .title-bidara {
-      color: #a766e9;
-    }
+    .fill-chatgpt { background-color: #5587eb; }
+    .fill-asknature { background-color: #ee9857; }
+    .fill-bidara { background-color: #ac6bee; }
+    .title-chatgpt { color: #5587eb; }
+    .title-asknature { color: #f59d59; }
+    .title-bidara { color: #a766e9; }
   </style>
 </head>
 
@@ -63,12 +47,10 @@
       <p class="text-gray-400 text-lg">Analyse der Tool-Ergebnisse anhand von 12 Kriterien</p>
     </header>
 
-    <!-- Hinweisblock -->
     <div id="hintBlock" class="bg-yellow-900/40 text-yellow-300 p-4 rounded-lg border border-yellow-600 text-center">
       ⚠️ Bitte füllen Sie in <strong>Schritt 2</strong> alle drei Tool-Ausgaben aus, um eine Bewertung zu erhalten.
     </div>
 
-    <!-- Bewertungsblock -->
     <div id="evaluationBlock" class="hidden container-card p-6 rounded-xl space-y-6">
       <h2 class="text-2xl font-bold text-indigo-400 flex items-center mb-4">
         <i data-lucide="check-circle" class="mr-2 h-6 w-6"></i> Bewertungsübersicht
@@ -105,51 +87,35 @@
     ];
 
     function analyzeText(text) {
-  const t = text.toLowerCase();
-  const words = t.split(/\s+/).length;
-  const uniqueWords = new Set(t.match(/\b[\wäöüß]+\b/g) || []).size;
+      const t = (text || "").toLowerCase();
+      const words = t.split(/\s+/).length;
 
-  /* --- QUELLENANALYSE  ---*/
-  const explicitSources = /(http|https|doi|isbn|et al\.|journal|nature|science|ieee|springer)/g;
-  const vagueSources = /(studien zeigen|forschung zeigt|stand der technik|bekannt)/g;
+      const explicitSources = /(http|https|doi|isbn|et al\.|journal|nature|science|ieee|springer)/;
+      const vagueSources = /(studien zeigen|forschung zeigt|stand der technik|bekannt)/;
 
-  const hasExplicitSources = explicitSources.test(t);
-  const hasVagueSources = vagueSources.test(t);
+      const lengthScore = Math.min(100, Math.log(words + 1) * 15);
+      const sourceScore = explicitSources.test(t) ? 100 : vagueSources.test(t) ? 60 : 30;
 
-  /* --- BASISWERTE ---*/
-  let lengthScore = Math.min(100, Math.log(words + 1) * 15);
-  let diversityScore = (uniqueWords / Math.max(1, words)) * 100;
+      const total = (lengthScore * 0.4) + (sourceScore * 0.6);
 
-  /* --- QUELLEN-SCORE ---*/
-  let sourceScore = 0;
-  if (hasExplicitSources) sourceScore = 100;
-  else if (hasVagueSources) sourceScore = 50;
-  else sourceScore = 15; 
-
-  /* --- GESAMT ---*/
-  const total =
-    lengthScore * 0.25 +
-    diversityScore * 0.25 +
-    sourceScore * 0.5; 
-
-  /* --- AUF 12 KRITERIEN VERTEILEN ---*/
-  return Array.from({ length: 12 }, (_, i) => {
-    let jitter = Math.sin(i * 1.7) * 3;
-    return Math.max(30, Math.min(100, total + jitter));
-  });
-}
-
+      return Array.from({ length: 12 }, (_, i) => {
+        const smoothing = (i - 5.5) * 0.4; // max ±2.2 %
+        return Math.max(30, Math.min(100, total + smoothing));
+      });
+    }
 
     function evaluateTools() {
       const hintBlock = document.getElementById("hintBlock");
       const evalBlock = document.getElementById("evaluationBlock");
       const container = document.getElementById("score_container");
 
-      const chatgpt = localStorage.getItem("chatgpt_response") || "";
-      const asknature = localStorage.getItem("asknature_response") || "";
-      const bidara = localStorage.getItem("bidara_response") || "";
+      const responses = {
+        chatgpt: localStorage.getItem("chatgpt_response") || "",
+        asknature: localStorage.getItem("asknature_response") || "",
+        bidara: localStorage.getItem("bidara_response") || ""
+      };
 
-      if (!chatgpt.trim() || !asknature.trim() || !bidara.trim()) {
+      if (Object.values(responses).some(r => !r.trim())) {
         hintBlock.classList.remove("hidden");
         evalBlock.classList.add("hidden");
         return;
@@ -157,8 +123,6 @@
 
       hintBlock.classList.add("hidden");
       evalBlock.classList.remove("hidden");
-
-      const responses = { chatgpt, asknature, bidara };
       container.innerHTML = "";
 
       Object.entries(responses).forEach(([tool, text]) => {
@@ -168,20 +132,14 @@
         localStorage.setItem(`final_score_${tool}`, avg.toFixed(1));
         localStorage.setItem(`detailed_scores_${tool}`, JSON.stringify(scores));
 
-        const colorClass =
-          tool === "chatgpt" ? "fill-chatgpt" :
-          tool === "asknature" ? "fill-asknature" :
-          "fill-bidara";
-        const titleClass =
-          tool === "chatgpt" ? "title-chatgpt" :
-          tool === "asknature" ? "title-asknature" :
-          "title-bidara";
+        const color = tool === "chatgpt" ? "fill-chatgpt" : tool === "asknature" ? "fill-asknature" : "fill-bidara";
+        const title = tool === "chatgpt" ? "title-chatgpt" : tool === "asknature" ? "title-asknature" : "title-bidara";
 
         let html = `
           <div class="p-4 bg-gray-800/30 rounded-lg border border-gray-700">
             <div class="flex justify-between items-center mb-4">
-              <div class="text-xl font-bold capitalize ${titleClass}">${tool}</div>
-              <div class="text-2xl font-extrabold ${titleClass}">${avg.toFixed(1)}%</div>
+              <div class="text-xl font-bold capitalize ${title}">${tool}</div>
+              <div class="text-2xl font-extrabold ${title}">${avg.toFixed(1)}%</div>
             </div>
         `;
 
@@ -193,7 +151,7 @@
                 <span class="font-semibold">${Math.round(s)}%</span>
               </div>
               <div class="progress-bar">
-                <div class="progress-fill ${colorClass}" style="width:${Math.round(s)}%"></div>
+                <div class="progress-fill ${color}" style="width:${Math.round(s)}%"></div>
               </div>
             </div>
           `;
@@ -207,17 +165,6 @@
     }
 
     document.addEventListener("DOMContentLoaded", evaluateTools);
-
-    document.querySelector('a[href="4_results.html"]').addEventListener("click", (e) => {
-      const c = localStorage.getItem("chatgpt_response") || "";
-      const a = localStorage.getItem("asknature_response") || "";
-      const b = localStorage.getItem("bidara_response") || "";
-
-      if (!c.trim() || !a.trim() || !b.trim()) {
-        e.preventDefault();
-        alert("Bitte füllen Sie in Schritt 2 alle Tool-Ausgaben aus, bevor Sie zu Schritt 4 fortfahren.");
-      }
-    });
   </script>
 </body>
 </html>
